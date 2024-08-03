@@ -2,6 +2,11 @@ name: "CodeQL"
 
 on:
   workflow_call:
+    secrets:
+      CUSTOM_GITHUB_TOKEN:
+        description: |
+          Github token with write access to the repo
+        required: false
   workflow_dispatch:
   repository_dispatch:
     types: run-commit-tests
@@ -40,4 +45,4 @@ jobs:
       uses: rsdmike/github-security-report-action@v3.0.4
       with:
         template: report
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
