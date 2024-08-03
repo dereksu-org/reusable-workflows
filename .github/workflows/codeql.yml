@@ -1,0 +1,43 @@
+name: "CodeQL"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  repository_dispatch:
+    types: run-commit-tests
+  push:
+    branches:
+    - master
+    - main
+    - v*
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+    - master
+    - main
+    - v*
+
+jobs:
+  codeql:
+    name: CodeQL security scanning
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: go
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+
+    - name: Generate CodeQL Security Report
+      if: ${{ inputs.export-report }}
+      uses: rsdmike/github-security-report-action@v3.0.4
+      with:
+        template: report
+        token: ${{ secrets.GITHUB_TOKEN }}
